@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BookOpen } from 'lucide-react';
 import LoginForm from './LoginForm';
+import RegisterForm from './RegisterForm';
 
 export const LoginPage = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
@@ -16,7 +17,7 @@ export const LoginPage = (): JSX.Element => {
 
       <main className="flex-1 flex flex-col relative">
         
-        <div className="relative h-[45%] w-full bg-[#dbeaf0] flex items-center justify-center overflow-hidden">
+        <div className="relative h-[40%] w-full bg-[#dbeaf0] flex items-center justify-center overflow-hidden">
             <div className="z-10 text-center md:text-left md:w-[630px] px-6">
                 <h1 className="text-3xl md:text-4xl font-bold text-black mb-4 tracking-tight">
                   Intelligent Tutoring System
@@ -26,10 +27,14 @@ export const LoginPage = (): JSX.Element => {
                 </p>
             </div>
 
-            <div className="absolute top-0 right-0 w-1/2 h-full opacity-20 pointer-events-none">
-                <img src="/left-content.png" alt="" 
-                className='w-full h-full bg-gradient-to-l from-black/10 to-transparent'/>
-            </div>
+            <div className="absolute top-0 right-0 w-1/2 h-full opacity-20 pointer-events-none overflow-hidden">
+              <img 
+                  src="/left-content.png" 
+                  alt=""
+                  className='w-full h-full object-cover object-right'
+              />
+              <div className="absolute inset-0 bg-gradient-to-l from-black/10 to-transparent"></div>
+          </div>
         </div>
 
         <div className="flex-1 bg-white flex justify-center -mt-10 z-20">
@@ -60,7 +65,7 @@ export const LoginPage = (): JSX.Element => {
               </div>
 
               <div className="w-full bg-white rounded-lg border border-[#d9d9d9] p-6 shadow-sm">
-                 {activeTab === 'login' ? <LoginForm /> : <></>}
+                 {activeTab === 'login' ? <LoginForm /> : <RegisterForm/>}
               </div>
 
            </div>
