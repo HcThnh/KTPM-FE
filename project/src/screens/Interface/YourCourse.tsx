@@ -10,8 +10,10 @@ const myCourses = [
 ];
 
 const activeTopics = ["Topic 1", "Topic 2", "Topic 3"];
-
-const YourCourses = (): JSX.Element => {
+interface YourCoursesProps {
+    onNavigate: (page: string) => void;
+}
+const YourCourses = ({ onNavigate }: YourCoursesProps): JSX.Element => {
   return (
     <div className="flex flex-col w-full h-full bg-white overflow-hidden">
       
@@ -50,7 +52,10 @@ const YourCourses = (): JSX.Element => {
                                     ></div>
                                 </div>
                                 
-                                <button className="bg-[#333333] text-white text-xs font-medium px-4 py-1.5 rounded hover:bg-black transition-colors shrink-0">
+                                <button 
+                                    onClick={() => onNavigate("course-detail")}
+                                    className="bg-[#333333] text-white text-xs font-medium px-4 py-1.5 rounded hover:bg-black transition-colors shrink-0"
+                                >
                                     Continue
                                 </button>
                             </div>
