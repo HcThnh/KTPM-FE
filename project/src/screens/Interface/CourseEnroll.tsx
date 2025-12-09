@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Heart, Image as ImageIcon, ChevronDown, ChevronUp } from "lucide-react";
 
 const chapters = [

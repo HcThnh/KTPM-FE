@@ -1,4 +1,3 @@
-
 import { Search, X, Check, MoreHorizontal, Image as ImageIcon } from "lucide-react";
 
 const courses = Array.from({ length: 11 }).map((_, i) => ({
