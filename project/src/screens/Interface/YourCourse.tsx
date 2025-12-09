@@ -1,19 +1,55 @@
+import { useEffect, useState } from "react";
 import { Plus, Search, X, Image as ImageIcon } from "lucide-react";
-
-const myCourses = [
-  { id: 1, name: "Course 1", progress: 20 },
-  { id: 2, name: "Course 2", progress: 45 },
-  { id: 3, name: "Course 3", progress: 70 },
-  { id: 4, name: "Course 4", progress: 10 },
-  { id: 5, name: "Course 5", progress: 90 },
-  { id: 6, name: "Course 6", progress: 0 },
-];
+import { getEnrolledCourses, getCourseProgress, EnrolledCourse } from "../../services/authServices";
 
 const activeTopics = ["Topic 1", "Topic 2", "Topic 3"];
+
 interface YourCoursesProps {
     onNavigate: (page: string) => void;
 }
+
 const YourCourses = ({ onNavigate }: YourCoursesProps): JSX.Element => {
+  const [courses, setCourses] = useState<EnrolledCourse[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMyCourses = async () => {
+      try {
+        const studentIdStr = localStorage.getItem('studentId');
+        
+        if (studentIdStr) {
+          const studentId = parseInt(studentIdStr);
+
+          const enrolledData = await getEnrolledCourses(studentId);
+
+          const coursesWithProgress = await Promise.all(
+            enrolledData.map(async (course) => {
+              try {
+                const progressVal = await getCourseProgress(studentId, course.id);
+                return { ...course, progress: progressVal * 100 };
+              } catch (err) {
+                console.error(`Failed to load progress for course ${course.id}`, err);
+                return { ...course, progress: 0 };
+              }
+            })
+          );
+
+          setCourses(coursesWithProgress);
+        }
+      } catch (error) {
+        console.error("Failed to load your courses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMyCourses();
+  }, []);
+
+  if (loading) {
+    return <div className="p-10 text-center text-gray-500">Loading your learning path...</div>;
+  }
+
   return (
     <div className="flex flex-col w-full h-full bg-white overflow-hidden">
       
@@ -32,36 +68,42 @@ const YourCourses = ({ onNavigate }: YourCoursesProps): JSX.Element => {
             </div>
 
             <div className="flex-1 overflow-y-auto pr-2 pb-20 custom-scrollbar flex flex-col gap-4">
-                {myCourses.map((course) => (
-                    <div 
-                        key={course.id} 
-                        className="border border-[#e7e7e8] rounded-lg p-4 flex flex-row gap-5 items-center bg-white"
-                    >
-                        <div className="w-28 h-20 bg-[#e5e5e5] rounded flex items-center justify-center shrink-0">
-                            <ImageIcon className="text-white w-8 h-8" />
-                        </div>
+                {courses.length > 0 ? (
+                  courses.map((course) => (
+                      <div 
+                          key={course.id} 
+                          className="border border-[#e7e7e8] rounded-lg p-4 flex flex-row gap-5 items-center bg-white"
+                      >
+                          <div className="w-28 h-20 bg-[#e5e5e5] rounded flex items-center justify-center shrink-0">
+                              <ImageIcon className="text-white w-8 h-8" />
+                          </div>
 
-                        <div className="flex flex-col gap-2 flex-1">
-                            <h3 className="font-bold text-base text-black">{course.name}</h3>
-                            
-                            <div className="flex items-center gap-4 w-full">
-                                <div className="flex-1 h-1.5 bg-[#e7e7e8] rounded-full overflow-hidden">
-                                    <div 
-                                        className="h-full bg-[#0088ff] rounded-full" 
-                                        style={{ width: `${course.progress}%` }}
-                                    ></div>
-                                </div>
-                                
-                                <button 
-                                    onClick={() => onNavigate("course-detail")}
-                                    className="bg-[#333333] text-white text-xs font-medium px-4 py-1.5 rounded hover:bg-black transition-colors shrink-0"
-                                >
-                                    Continue
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ))}
+                          <div className="flex flex-col gap-2 flex-1">
+                              <h3 className="font-bold text-base text-black">{course.title}</h3>
+                              
+                              <div className="flex items-center gap-4 w-full">
+                                  <div className="flex-1 h-1.5 bg-[#e7e7e8] rounded-full overflow-hidden">
+                                      <div 
+                                          className="h-full bg-[#0088ff] rounded-full transition-all duration-500" 
+                                          style={{ width: `${course.progress || 0}%` }}
+                                      ></div>
+                                  </div>
+                                  
+                                  <button 
+                                      onClick={() => onNavigate("course-detail")}
+                                      className="bg-[#333333] text-white text-xs font-medium px-4 py-1.5 rounded hover:bg-black transition-colors shrink-0"
+                                  >
+                                      Continue
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                  ))
+                ) : (
+                  <div className="text-center mt-10 text-gray-400">
+                    You haven't enrolled in any courses yet.
+                  </div>
+                )}
             </div>
         </div>
 
