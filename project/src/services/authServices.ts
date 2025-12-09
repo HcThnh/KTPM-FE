@@ -34,12 +34,25 @@ export const registerAPI = async (data: {
   const response = await api.post<AuthResponse>('/iam-service/auth/register', payload);
   return response.data;
 };
-
+export interface Section {
+  id: number;
+  name: string;
+  text: string | null;
+  orderIndex: number;
+}
+export interface Chapter {
+  id: number;
+  title: string;
+  summary: string;
+  orderIndex: number;
+  sections: Section[];
+}
 export interface Course {
   id: number;
   title: string;
   description: string;
   thumbnailFileId: number | null;
+  chapters: Chapter[]; 
 }
 
 export interface EnrolledCourse extends Course {
@@ -48,6 +61,10 @@ export interface EnrolledCourse extends Course {
 
 export const getAllCourses = async () => {
   const response = await api.get<{ result: Course[] }>('/course-service/courses');
+  return response.data.result;
+};
+export const getCourseById = async (courseId: number) => {
+  const response = await api.get<{ result: Course }>(`/course-service/courses/${courseId}`);
   return response.data.result;
 };
 
@@ -60,3 +77,4 @@ export const getCourseProgress = async (studentId: number, courseId: number) => 
   const response = await api.get<{ result: number }>(`/course-service/progress/student/${studentId}/course/${courseId}`);
   return response.data.result;
 };
+

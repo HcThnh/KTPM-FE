@@ -30,6 +30,7 @@ const LoginForm = () => {
         localStorage.setItem('user', JSON.stringify(data.result.userDto));
         
         localStorage.setItem('studentId', data.result.userDto.id.toString());
+        localStorage.setItem('userInfo', JSON.stringify(data.result.userDto));
 
         navigate('/'); 
         window.location.reload();

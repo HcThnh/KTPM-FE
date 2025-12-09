@@ -1,11 +1,18 @@
 import { useState, useRef, useEffect } from "react";
-
+interface UserDto {
+  id: number;
+  username: string;
+  role: string;
+}
 interface SidebarProps {
     activePage: string;
     onNavigate: (pageName: string) => void;
 }
 
 export const Navbar = ({ activePage, onNavigate }: SidebarProps): JSX.Element => {
+
+    const [user, setUser] = useState<UserDto | null>(null);
+
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -14,7 +21,18 @@ export const Navbar = ({ activePage, onNavigate }: SidebarProps): JSX.Element =>
         { label: "your-courses", name: "YOUR COURSES" },
         { label: "browse-courses", name: "BROWSE COURSES" }
     ];
-
+    useEffect(() => {
+        const storedUser = localStorage.getItem('userInfo');
+        if (storedUser) {
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                setUser(parsedUser);
+              
+            } catch (error) {
+                console.error("Lỗi parse thông tin user", error);
+            }
+        }
+    }, []);
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -26,6 +44,13 @@ export const Navbar = ({ activePage, onNavigate }: SidebarProps): JSX.Element =>
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userInfo'); // Xóa thông tin user
+        console.log("Logged out");
+        // Điều hướng về trang login hoặc reload trang
+        window.location.href = '/login'; 
+    };
 
     const handleNavigation = (page: string) => {
         onNavigate(page);
@@ -69,8 +94,8 @@ export const Navbar = ({ activePage, onNavigate }: SidebarProps): JSX.Element =>
                         className="w-[40px] h-[40px] rounded-full object-cover"
                     />
                     <div className="text-left">
-                        <h4 className="text-[#333] font-bold text-sm leading-tight">John</h4>
-                        <p className="text-[#b3b3b3] text-xs">Student</p>
+                        <h4 className="text-[#333] font-bold text-sm leading-tight">{user?.username || "Guest"}</h4>
+                        <p className="text-[#b3b3b3] text-xs">{user?.role || "Visitor"}</p>
                     </div>
                 </button>
 
@@ -85,7 +110,7 @@ export const Navbar = ({ activePage, onNavigate }: SidebarProps): JSX.Element =>
                         </button>
 
                         <button 
-                            onClick={() => console.log("Logging out")} 
+                            onClick={handleLogout}
                             className="w-fit min-w-[100px] bg-[#ef4444] text-white font-medium py-2 px-6 rounded-lg hover:bg-red-600 transition-colors"
                         >
                             Logout
