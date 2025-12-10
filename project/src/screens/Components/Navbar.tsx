@@ -28,6 +28,9 @@ export const Navbar = ({ activePage, onNavigate }: SidebarProps): JSX.Element =>
     }, []);
 
     const handleNavigation = (page: string) => {
+        if (page === "logout") {
+            localStorage.clear();
+        }
         onNavigate(page);
         setIsDropdownOpen(false); 
     };
@@ -85,7 +88,7 @@ export const Navbar = ({ activePage, onNavigate }: SidebarProps): JSX.Element =>
                         </button>
 
                         <button 
-                            onClick={() => console.log("Logging out")} 
+                            onClick={() => handleNavigation("logout")} 
                             className="w-fit min-w-[100px] bg-[#ef4444] text-white font-medium py-2 px-6 rounded-lg hover:bg-red-600 transition-colors"
                         >
                             Logout

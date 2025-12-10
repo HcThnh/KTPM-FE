@@ -47,16 +47,31 @@ export interface EnrolledCourse extends Course {
 }
 
 export const getAllCourses = async () => {
-  const response = await api.get<{ result: Course[] }>('/course-service/courses');
+  const token = localStorage.getItem('accessToken');
+  const response = await api.get<{ result: Course[] }>('/course-service/courses', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data.result;
 };
 
 export const getEnrolledCourses = async (studentId: number) => {
-  const response = await api.get<{ result: Course[] }>(`/course-service/enroll/student/${studentId}`);
+  const token = localStorage.getItem('accessToken');
+  const response = await api.get<{ result: Course[] }>(`/course-service/enroll/student/${studentId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data.result;
 };
 
 export const getCourseProgress = async (studentId: number, courseId: number) => {
-  const response = await api.get<{ result: number }>(`/course-service/progress/student/${studentId}/course/${courseId}`);
+  const token = localStorage.getItem('accessToken');
+  const response = await api.get<{ result: number }>(`/course-service/progress/student/${studentId}/course/${courseId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data.result;
 };

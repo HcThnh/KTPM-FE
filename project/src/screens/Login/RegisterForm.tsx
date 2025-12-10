@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { registerAPI } from '../../services/authServices';
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -44,9 +46,15 @@ const RegisterForm = () => {
       });
 
       if (response.code === 1000) {
-        setSuccess(true);
-        setFormData({ username: '', email: '', password: '', confirmPassword: '' });
-        alert("Registration successful! Please switch to Login tab.");
+        // Lưu thông tin đăng nhập
+        localStorage.setItem('accessToken', response.result.accessToken);
+        localStorage.setItem('refreshToken', response.result.refreshToken);
+        localStorage.setItem('user', JSON.stringify(response.result.userDto));
+        localStorage.setItem('studentId', response.result.userDto.id.toString());
+
+        // Chuyển hướng về trang chủ
+        navigate('/');
+        window.location.reload();
       } else {
         setError(response.message || "Registration failed.");
       }

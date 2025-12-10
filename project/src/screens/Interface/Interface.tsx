@@ -6,6 +6,7 @@ import BrowseCourses from "./BrowseCourse";
 import Profile from "./Profile";
 import CourseDetail from "./CourseDetail";
 import CourseEnroll from "./CourseEnroll";
+import { LoginPage } from "../Login";
 
 export const Interface = () : JSX.Element => {
     const [activePage, setActivePage] = useState("home");
@@ -24,6 +25,8 @@ export const Interface = () : JSX.Element => {
                 return <CourseDetail/>
             case "course-enroll":
                 return <CourseEnroll />;
+            case "logout":
+                return <LoginPage />;
             default:
                 return <div className="p-8">Chức năng đang phát triển: {activePage}</div>;
         }

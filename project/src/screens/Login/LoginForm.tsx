@@ -32,6 +32,7 @@ const LoginForm = () => {
         localStorage.setItem('studentId', data.result.userDto.id.toString());
 
         navigate('/'); 
+        window.location.reload();
       } else {
         setError(data.message || "Login failed. Please check your credentials.");
       }
