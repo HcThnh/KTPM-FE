@@ -52,11 +52,11 @@ export const getAllCourses = async () => {
 };
 
 export const getEnrolledCourses = async (studentId: number) => {
-  const response = await api.get<{ result: Course[] }>(`/course-service/enroll/student/${studentId}`);
+  const response = await api.get<{ result: Course[] }>(`/learning-service/enroll/student/${studentId}`);
   return response.data.result;
 };
 
 export const getCourseProgress = async (studentId: number, courseId: number) => {
-  const response = await api.get<{ result: number }>(`/course-service/progress/student/${studentId}/course/${courseId}`);
+  const response = await api.get<{ result: number }>(`/learning-service/progress/student/${studentId}/course/${courseId}`);
   return response.data.result;
 };
