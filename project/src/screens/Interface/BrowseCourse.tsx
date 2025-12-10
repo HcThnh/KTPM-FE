@@ -1,17 +1,28 @@
 import { Search, X, Check, MoreHorizontal, Image as ImageIcon } from "lucide-react";
-
-const courses = Array.from({ length: 11 }).map((_, i) => ({
-  id: i + 1,
-  name: `Course Name ${i + 1}`,
-  topics: ["Topic 1", "Topic 2"]
-}));
+import { getAllCourses, Course } from "../../services/authServices";
+import { useState, useEffect } from "react";
 
 const activeSidebarTopics = ["Topic 1", "Topic 2", "Topic 3"];
 const sortOptions = ["Newest", "Name ascending", "Name descending", "Recommended"];
 interface BrowseCoursesProps {
-    onNavigate: (page: string) => void;
+    onNavigate: (page: string, id?: number) => void;
 }
 const BrowseCoursesBody = ({ onNavigate }: BrowseCoursesProps): JSX.Element => {
+
+  const [courses, setCourses] = useState<Course[]>([]);
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const data = await getAllCourses();
+        setCourses(data);
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+      } finally {
+      }
+    };
+
+    fetchCourses();
+  }, []);
   return (
     <>
       <style>{`
@@ -114,7 +125,7 @@ const BrowseCoursesBody = ({ onNavigate }: BrowseCoursesProps): JSX.Element => {
                 {courses.map((course) => (
                   <div 
                     key={course.id} 
-                    onClick={() => onNavigate("course-enroll")}
+                    onClick={() => onNavigate("course-enroll", course.id)}
                     className="border border-[#e7e7e8] rounded-lg p-3 flex flex-col gap-3 bg-white hover:shadow-md transition-shadow h-fit"
                   >
                     <div className="w-full aspect-square bg-[#e5e5e5] rounded flex items-center justify-center">
@@ -122,15 +133,29 @@ const BrowseCoursesBody = ({ onNavigate }: BrowseCoursesProps): JSX.Element => {
                     </div>
 
                     <div className="flex flex-col gap-2.5">
-                      <h3 className="font-bold text-sm text-black">{course.name}</h3>
+                      <h3 
+                      className="font-bold text-sm text-black truncate"
+                      title={course.title}
+                      >
+                        {course.title}</h3>
                       
                       <div className="flex items-center justify-between">
                         <div className="flex gap-1.5">
-                          {course.topics.map((topic, i) => (
-                            <span key={i} className="bg-[#2c2c2c] text-white text-[10px] font-medium px-2 py-1 rounded">
-                              {topic}
-                            </span>
-                          ))}
+                          {course.chapters.slice(0, 2).map((chapter, i) => (
+                              <span 
+                                key={i} 
+                                className="bg-[#2c2c2c] text-white text-[10px] font-medium px-2 py-1 rounded max-w-[80px] truncate"
+                                title={chapter.title}
+                              >
+                                {chapter.title}
+                              </span>
+                            ))}
+                            
+                            {course.chapters.length > 2 && (
+                              <span className="text-[10px] text-gray-500 font-medium py-1">
+                                  +{course.chapters.length - 2}
+                              </span>
+                            )}
                         </div>
                         
                         <button className="text-black hover:bg-gray-100 p-1 rounded-full">
