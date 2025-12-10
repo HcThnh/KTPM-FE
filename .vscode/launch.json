@@ -1,0 +1,54 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ApiGatewayApplication<api-gateway>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.api_gateway.ApiGatewayApplication",
+            "projectName": "api-gateway",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CourseServiceApplication<course-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.its.course.CourseServiceApplication",
+            "projectName": "course-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-IAMServiceApplication<iam-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.its.iam.IAMServiceApplication",
+            "projectName": "iam-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MediaServiceApplication<media-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.its.media.MediaServiceApplication",
+            "projectName": "media-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceRegistryApplication<service-registry>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.service_registry.ServiceRegistryApplication",
+            "projectName": "service-registry",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

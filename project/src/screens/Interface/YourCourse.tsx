@@ -5,12 +5,20 @@ import { getEnrolledCourses, getCourseProgress, EnrolledCourse } from "../../ser
 const activeTopics = ["Topic 1", "Topic 2", "Topic 3"];
 
 interface YourCoursesProps {
-    onNavigate: (page: string) => void;
+    onNavigate: (page: string, id?: number) => void;
 }
 
 const YourCourses = ({ onNavigate }: YourCoursesProps): JSX.Element => {
   const [courses, setCourses] = useState<EnrolledCourse[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [topicInput, setTopicInput] = useState("");
+  const [activeTopics, setActiveTopics] = useState<string[]>([]);
+  const [filters, setFilters] = useState({
+    starred: false,
+    finished: false,
+    saved: false,
+  });
 
   useEffect(() => {
     const fetchMyCourses = async () => {
@@ -45,6 +53,39 @@ const YourCourses = ({ onNavigate }: YourCoursesProps): JSX.Element => {
 
     fetchMyCourses();
   }, []);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && topicInput.trim() !== "") {
+      if (!activeTopics.includes(topicInput.trim())) {
+        setActiveTopics([...activeTopics, topicInput.trim()]);
+      }
+      setTopicInput("");
+    }
+  };
+
+  const removeTopic = (topicToRemove: string) => {
+    setActiveTopics(activeTopics.filter(topic => topic !== topicToRemove));
+  };
+
+  const toggleFilter = (key: keyof typeof filters) => {
+    setFilters(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const filteredCourses = courses.filter(course => {
+    if (activeTopics.length > 0) {
+      const titleLower = course.title.toLowerCase();
+      const matchesTopic = activeTopics.some(topic => 
+        titleLower.includes(topic.toLowerCase())
+      );
+      if (!matchesTopic) return false;
+    }
+
+    if (filters.finished && (course.progress || 0) < 100) {
+      return false;
+    }
+    
+    return true;
+  });
 
   if (loading) {
     return <div className="p-10 text-center text-gray-500">Loading your learning path...</div>;
@@ -90,7 +131,7 @@ const YourCourses = ({ onNavigate }: YourCoursesProps): JSX.Element => {
                                   </div>
                                   
                                   <button 
-                                      onClick={() => onNavigate("course-detail")}
+                                      onClick={() => onNavigate("course-detail", course.id)}
                                       className="bg-[#333333] text-white text-xs font-medium px-4 py-1.5 rounded hover:bg-black transition-colors shrink-0"
                                   >
                                       Continue
@@ -115,41 +156,79 @@ const YourCourses = ({ onNavigate }: YourCoursesProps): JSX.Element => {
                     <div className="relative flex-1">
                         <input 
                             type="text" 
-                            placeholder="Topic search" 
-                            className="w-full bg-[#f5f5f5] rounded-full py-1.5 pl-3 pr-7 text-xs focus:outline-none focus:ring-1 focus:ring-gray-300 placeholder:text-gray-400"
+                            placeholder="Type & Enter..." 
+                            value={topicInput}
+                            onChange={(e) => setTopicInput(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            className="w-full bg-[#f5f5f5] rounded-full py-1.5 pl-3 pr-7 text-xs focus:outline-none focus:ring-1 focus:ring-black placeholder:text-gray-400"
                         />
                         <Search size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                    {activeTopics.map((topic, index) => (
-                        <div key={index} className="bg-[#2c2c2c] text-white text-[11px] px-2.5 py-1 rounded flex items-center gap-1.5">
-                            <span>{topic}</span>
-                            <button className="hover:text-gray-300 flex items-center">
-                                <X size={10} strokeWidth={3} />
-                            </button>
-                        </div>
-                    ))}
+                <div className="flex flex-wrap gap-2 min-h-[24px]">
+                    {activeTopics.length > 0 ? (
+                      activeTopics.map((topic, index) => (
+                          <div key={index} className="bg-[#2c2c2c] text-white text-[11px] px-2.5 py-1 rounded flex items-center gap-1.5 animate-fadeIn">
+                              <span>{topic}</span>
+                              <button 
+                                onClick={() => removeTopic(topic)}
+                                className="hover:text-gray-300 flex items-center cursor-pointer"
+                              >
+                                  <X size={10} strokeWidth={3} />
+                              </button>
+                          </div>
+                      ))
+                    ) : (
+                      <span className="text-xs text-gray-400 italic">No filters applied</span>
+                    )}
                 </div>
 
-                <div className="flex flex-col gap-2 pt-1">
-                    {["Starred", "Finished", "Saved"].map((label) => (
-                        <label key={label} className="flex items-center gap-2.5 cursor-pointer group">
-                            <div className="relative flex items-center justify-center">
-                                <input 
-                                    type="checkbox" 
-                                    className="peer appearance-none w-4 h-4 border-2 border-[#e7e7e8] rounded bg-white checked:bg-black checked:border-black transition-all"
-                                />
-                                <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                            </div>
-                            <span className="text-sm text-[#555] group-hover:text-black transition-colors font-medium">
-                                {label}
-                            </span>
-                        </label>
-                    ))}
+                <div className="flex flex-col gap-2 pt-1 border-t border-gray-100 mt-2">
+                    <label className="flex items-center gap-2.5 cursor-pointer group py-1">
+                        <div className="relative flex items-center justify-center">
+                            <input 
+                                type="checkbox" 
+                                checked={filters.starred}
+                                onChange={() => toggleFilter('starred')}
+                                className="peer appearance-none w-4 h-4 border-2 border-[#e7e7e8] rounded bg-white checked:bg-black checked:border-black transition-all"
+                            />
+                            <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <span className="text-sm text-[#555] group-hover:text-black transition-colors font-medium">Starred</span>
+                    </label>
+
+                    <label className="flex items-center gap-2.5 cursor-pointer group py-1">
+                        <div className="relative flex items-center justify-center">
+                            <input 
+                                type="checkbox" 
+                                checked={filters.finished}
+                                onChange={() => toggleFilter('finished')}
+                                className="peer appearance-none w-4 h-4 border-2 border-[#e7e7e8] rounded bg-white checked:bg-black checked:border-black transition-all"
+                            />
+                            <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <span className="text-sm text-[#555] group-hover:text-black transition-colors font-medium">Finished</span>
+                    </label>
+
+                    <label className="flex items-center gap-2.5 cursor-pointer group py-1">
+                        <div className="relative flex items-center justify-center">
+                            <input 
+                                type="checkbox" 
+                                checked={filters.saved}
+                                onChange={() => toggleFilter('saved')}
+                                className="peer appearance-none w-4 h-4 border-2 border-[#e7e7e8] rounded bg-white checked:bg-black checked:border-black transition-all"
+                            />
+                            <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <span className="text-sm text-[#555] group-hover:text-black transition-colors font-medium">Saved</span>
+                    </label>
                 </div>
 
             </div>

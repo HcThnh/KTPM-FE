@@ -1,11 +1,32 @@
 import  { useState, useRef, useEffect } from "react";
 import { Camera, Plus, MoreVertical ,File} from "lucide-react";
 
+interface UserDto {
+  id: number;
+  username: string;
+  role: string;
+}
 const ProfilePage = (): JSX.Element => {
+
+    const [user, setUser] = useState<UserDto | null>(null);
+
   const blueShadow = "shadow-[0_10px_30px_-4px_rgba(59,130,246,0.25),0_6px_12px_-4px_rgba(59,130,246,0.2)]";
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+    useEffect(() => {
+        const storedUser = localStorage.getItem('userInfo');
+        if (storedUser) {
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                setUser(parsedUser);
+                
+            } catch (error) {
+                console.error("Lỗi parse thông tin user", error);
+            }
+        }
+    }, []);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -25,8 +46,8 @@ const ProfilePage = (): JSX.Element => {
         <div className="w-32 h-32 rounded-full overflow-hidden mb-4 border-4 border-white shadow-sm">
           <img src="/image.png" alt="Profile" className="w-full h-full object-cover" />
         </div>
-        <h1 className="text-2xl font-bold text-black">John</h1>
-        <p className="text-gray-500 text-sm mt-1">Student</p>
+        <h1 className="text-2xl font-bold text-black">{user?.username || "Guest"}</h1>
+        <p className="text-gray-500 text-sm mt-1">{user?.role || "Visitor"}</p>
 <div 
             ref={dropdownRef}
             className="absolute right-0 top-1/2 -translate-y-1/2"

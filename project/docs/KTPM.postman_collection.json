@@ -1,0 +1,607 @@
+{
+	"info": {
+		"_postman_id": "03d7522f-049b-43f5-a192-a0f12158ad2a",
+		"name": "KTPM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40073034"
+	},
+	"item": [
+		{
+			"name": "Media",
+			"item": [
+				{
+					"name": "Download File",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJST0xFX0FETUlOIl0sInN1YiI6InRyYW5uYW1zb24iLCJpYXQiOjE3NjUwMTQxNzgsImV4cCI6MTc2NTEwMDU3OH0.hxYOSU1o40kbwa06duswwiwaOMQmxubqI8Bh1yORiWc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Gateway-Secret",
+								"value": "super-secret-key-change-in-production-12345",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8765/api/media-service/files/download-url/:fileId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"media-service",
+								"files",
+								"download-url",
+								":fileId"
+							],
+							"variable": [
+								{
+									"key": "fileId",
+									"value": "c0d94f27-c65a-46b3-9255-2326825d75e4"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Download File",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-Gateway-Secret",
+										"value": "super-secret-key-change-in-production-12345",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8765/api/media-service/files/download-url/:fileId",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8765",
+									"path": [
+										"api",
+										"media-service",
+										"files",
+										"download-url",
+										":fileId"
+									],
+									"variable": [
+										{
+											"key": "fileId",
+											"value": "c0d94f27-c65a-46b3-9255-2326825d75e4"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\r\n    \"code\": 1000,\r\n    \"result\": {\r\n        \"objectKey\": \"videos/test.mp4\",\r\n        \"publicUrl\": \"https://soft-architecture.s3.ap-southeast-1.amazonaws.com/videos/test.mp4\",\r\n        \"endpoint\": \"https://soft-architecture.s3.ap-southeast-1.amazonaws.com/videos/test.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20251210T033537Z&X-Amz-SignedHeaders=host&X-Amz-Credential=AKIAVLZC4FKO6YY5Y5NX%2F20251210%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Expires=900&X-Amz-Signature=898d58bd33ad6358bf8b53c0b5a79a36c65477b6e5086c6f50fbd57f1019d033\"\r\n    }\r\n}"
+						}
+					]
+				},
+				{
+					"name": "Save media file",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJST0xFX0FETUlOIl0sInN1YiI6InRyYW5uYW1zb24iLCJpYXQiOjE3NjUwMTg0MTAsImV4cCI6MTc2NTEwNDgxMH0.M54BhkPLkChkJLKmF7gVhWaaHS6pHgh2ocJvwp9NsRk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"publicUrl\": \"https://soft-architecture.s3.ap-southeast-1.amazonaws.com/videos/test.mp4\",\r\n    \"name\": \"test.mp4\",\r\n    \"userId\": \"trannamson\",\r\n    \"isProfilePicture\": true,\r\n    \"sectionId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8765/api/media-service/files",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"media-service",
+								"files"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get PresignedUrl",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJST0xFX1NUVURFTlQiXSwic3ViIjoidHVpdGVuc29ubmUiLCJpYXQiOjE3NjUzNTE1MTIsImV4cCI6MTc2NTQzNzkxMn0.0eMzMHJKYOKJj8a9dN3Dun1MBDlg_i0zgkrQ_uPoPfI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8765/api/media-service/files/presigned-url?filename=test.mp4&filetype=video/mp4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"media-service",
+								"files",
+								"presigned-url"
+							],
+							"query": [
+								{
+									"key": "filename",
+									"value": "test.mp4"
+								},
+								{
+									"key": "filetype",
+									"value": "video/mp4"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Learning",
+			"item": [
+				{
+					"name": "Enroll a course",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Gateway-Secret",
+								"value": "super-secret-key-change-in-production-12345",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8765/api/learning-service/enroll/course/:courseId/student/:studentId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"learning-service",
+								"enroll",
+								"course",
+								":courseId",
+								"student",
+								":studentId"
+							],
+							"variable": [
+								{
+									"key": "courseId",
+									"value": "2"
+								},
+								{
+									"key": "studentId",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all course enrolled by student",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJST0xFX1NUVURFTlQiXSwic3ViIjoidHVpdGVuc29ubmUiLCJpYXQiOjE3NjUzNTE1MTIsImV4cCI6MTc2NTQzNzkxMn0.0eMzMHJKYOKJj8a9dN3Dun1MBDlg_i0zgkrQ_uPoPfI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Gateway-Secret",
+								"value": "super-secret-key-change-in-production-12345",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8765/api/learning-service/enroll/student/:studentId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"learning-service",
+								"enroll",
+								"student",
+								":studentId"
+							],
+							"variable": [
+								{
+									"key": "studentId",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Studetn Progress of a course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJST0xFX1NUVURFTlQiXSwic3ViIjoidHVpdGVuc29ubmUiLCJpYXQiOjE3NjUzNTE1MTIsImV4cCI6MTc2NTQzNzkxMn0.0eMzMHJKYOKJj8a9dN3Dun1MBDlg_i0zgkrQ_uPoPfI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Gateway-Secret",
+								"value": "super-secret-key-change-in-production-12345",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8765/api/learning-service/progress/student/:studentId/course/:courseId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"learning-service",
+								"progress",
+								"student",
+								":studentId",
+								"course",
+								":courseId"
+							],
+							"variable": [
+								{
+									"key": "studentId",
+									"value": "5"
+								},
+								{
+									"key": "courseId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finish course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJST0xFX1NUVURFTlQiXSwic3ViIjoidHVpdGVuc29ubmUiLCJpYXQiOjE3NjUzNTE1MTIsImV4cCI6MTc2NTQzNzkxMn0.0eMzMHJKYOKJj8a9dN3Dun1MBDlg_i0zgkrQ_uPoPfI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Gateway-Secret",
+								"value": "super-secret-key-change-in-production-12345",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8765/api/learning-service/progress/student/:studentId/chapter/:chapterId/finish",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"learning-service",
+								"progress",
+								"student",
+								":studentId",
+								"chapter",
+								":chapterId",
+								"finish"
+							],
+							"variable": [
+								{
+									"key": "studentId",
+									"value": "5"
+								},
+								{
+									"key": "chapterId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authenticate",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"username\": \"tuitensonne\", \"password\": \"123456\", \"email\": \"tes7@example.com\", \"roleId\": 4 }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8765/api/iam-service/auth/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"iam-service",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"username\": \"anhkhoaoki4\", \"password\": \"123456\" }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8765/api/iam-service/auth/authenticate",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"iam-service",
+								"auth",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Course",
+			"item": [
+				{
+					"name": "Get all Course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJST0xFX1NUVURFTlQiXSwic3ViIjoiYW5oa2hvYW9raTQiLCJpYXQiOjE3NjQ5NDU5NzUsImV4cCI6MTc2NTAzMjM3NX0.llF5RwYxZQjYdYZutrKoVSroThgIHrwKtIB4B_galaY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8765/api/course-service/courses",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"course-service",
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Detail of a Course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJST0xFX1NUVURFTlQiXSwic3ViIjoiYW5oa2hvYW9raTQiLCJpYXQiOjE3NjQ5NDU5NzUsImV4cCI6MTc2NTAzMjM3NX0.llF5RwYxZQjYdYZutrKoVSroThgIHrwKtIB4B_galaY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8765/api/course-service/courses/:courseId",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"course-service",
+								"courses",
+								":courseId"
+							],
+							"variable": [
+								{
+									"key": "courseId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Chapters of a Course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJST0xFX1NUVURFTlQiXSwic3ViIjoiam9obl9zdHVkZW50IiwiaWF0IjoxNzY0OTU1MzYxLCJleHAiOjE3NjUwNDE3NjF9.4Jdv9Ptfszn7pQaWywBePoWjvgtBGGHF6LhliRmud2c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8765/api/course-service/courses/:courseId/content/chapters",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"course-service",
+								"courses",
+								":courseId",
+								"content",
+								"chapters"
+							],
+							"variable": [
+								{
+									"key": "courseId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Detail of a Chapter",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJST0xFX1NUVURFTlQiXSwic3ViIjoiam9obl9zdHVkZW50IiwiaWF0IjoxNzY0OTU1MzYxLCJleHAiOjE3NjUwNDE3NjF9.4Jdv9Ptfszn7pQaWywBePoWjvgtBGGHF6LhliRmud2c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8765/api/course-service/courses/:courseId/content/chapters/:chapterId",
+							"host": [
+								"localhost"
+							],
+							"port": "8765",
+							"path": [
+								"api",
+								"course-service",
+								"courses",
+								":courseId",
+								"content",
+								"chapters",
+								":chapterId"
+							],
+							"variable": [
+								{
+									"key": "courseId",
+									"value": "1"
+								},
+								{
+									"key": "chapterId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
