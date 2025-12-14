@@ -78,3 +78,7 @@ export const getCourseProgress = async (studentId: number, courseId: number) => 
   return response.data.result;
 };
 
+export const EnrollInCourse = async (studentId: number, courseId: number) => {
+  const response = await api.post<{ result: Course[] }>(`/learning-service/enroll/course/${courseId}/student/${studentId}`);
+  return response.data.result;
+}

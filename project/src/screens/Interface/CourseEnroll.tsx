@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Heart, Image as ImageIcon, ChevronDown, ChevronUp,PlayCircle,ArrowLeft } from "lucide-react";
-import { getCourseById, Course, Chapter, Section } from "../../services/authServices";
+import { Heart, Image as ImageIcon, ChevronDown, ChevronUp,PlayCircle,ArrowLeft,Loader2,CheckCircle } from "lucide-react";
+import { getCourseById,EnrollInCourse,getEnrolledCourses, Course, Chapter, Section } from "../../services/authServices";
 
 interface CourseEnrollProps {
     courseId: number; 
@@ -8,37 +8,78 @@ interface CourseEnrollProps {
 }
 const CourseEnroll = ({ courseId, onNavigate }: CourseEnrollProps): JSX.Element => {
 
+  const studentIdStr =  localStorage.getItem('studentId');
+  const studentId = studentIdStr ? parseInt(studentIdStr) : null;
+
   const [course, setCourse] = useState<Course | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const [isEnrolling, setIsEnrolling] = useState<boolean>(false);
+
+  const [isRegistered, setIsRegistered] = useState<boolean>(false);
+
   const [expandedChapter, setExpandedChapter] = useState<number | null>(1);
 
-  useEffect(() => {
-      const fetchCourseDetail = async () => {
-          if (!courseId) return;
-          
-          try {
-              setIsLoading(true);
-              const data = await getCourseById(courseId);
-              setCourse(data);
-              
-              if (data.chapters && data.chapters.length > 0) {
-                  setExpandedChapter(data.chapters[0].id);
-              }
-          } catch (error) {
-              console.error("Failed to fetch course detail:", error);
-          } finally {
-              setIsLoading(false);
-          }
-      };
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!courseId) return;
+            
+            try {
+                setIsLoading(true);
 
-      fetchCourseDetail();
-  }, [courseId]);
+                const [courseData, enrolledList] = await Promise.all([
+                    getCourseById(courseId),
+                    studentId ? getEnrolledCourses(studentId) : Promise.resolve([])
+                ]);
+
+                setCourse(courseData);
+
+                if (enrolledList && enrolledList.length > 0) {
+                    const isFound = enrolledList.some((c) => c.id === courseId);
+                    setIsRegistered(isFound);
+                }
+
+                if (courseData.chapters && courseData.chapters.length > 0) {
+                    setExpandedChapter(courseData.chapters[0].id);
+                }
+
+            } catch (error) {
+                console.error("Failed to fetch data:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [courseId]);
+
   const toggleChapter = (id: number) => {
     setExpandedChapter(expandedChapter === id ? null : id);
   };
   const renderSectionIcon = () => {
       return <PlayCircle size={14} className="text-gray-500" />;
+  };
+  const handleEnroll = async () => {
+    if (!studentId) {
+        alert("Vui lòng đăng nhập để đăng ký khóa học!");
+        return;
+    }
+
+    try {
+        setIsEnrolling(true);
+
+        await EnrollInCourse(studentId, courseId);
+        
+        alert("Đăng ký khóa học thành công!");
+        
+        onNavigate("your-courses"); 
+        
+    } catch (error) {
+        console.error("Enrollment failed:", error);
+        alert("Đăng ký thất bại. Vui lòng thử lại sau.");
+    } finally {
+        setIsEnrolling(false);
+    }
   };
 
   if (isLoading) {
@@ -84,9 +125,32 @@ const CourseEnroll = ({ courseId, onNavigate }: CourseEnrollProps): JSX.Element 
 
             <div className="flex-1"></div> 
 
-            <button className="w-full bg-[#10b981] text-white font-bold py-3 rounded hover:bg-[#059669] transition-colors shadow-sm">
-                Enroll
-            </button>
+                {isRegistered ? (
+                    <button 
+                        disabled
+                        className="w-full bg-gray-100 text-gray-500 font-bold py-3 rounded cursor-not-allowed flex items-center justify-center gap-2 border border-gray-200"
+                    >
+                        <CheckCircle size={20} className="text-green-500" />
+                        Already Enrolled
+                    </button>
+                ) : (
+                    <button 
+                        onClick={handleEnroll}
+                        disabled={isEnrolling}
+                        className={`w-full text-white font-bold py-3 rounded transition-colors shadow-sm flex items-center justify-center gap-2
+                            ${isEnrolling ? "bg-emerald-400 cursor-not-allowed" : "bg-[#10b981] hover:bg-[#059669]"}
+                        `}
+                    >
+                        {isEnrolling ? (
+                            <>
+                                <Loader2 size={20} className="animate-spin" />
+                                Processing...
+                            </>
+                        ) : (
+                            "Enroll Now"
+                        )}
+                    </button>
+                )}
         </div>
       </div>
 
@@ -101,7 +165,6 @@ const CourseEnroll = ({ courseId, onNavigate }: CourseEnrollProps): JSX.Element 
         {course.chapters && course.chapters.length > 0 ? (
             course.chapters.map((chapter: Chapter) => (
                 <div key={chapter.id} className="border border-[#e5e5e5] rounded-xl overflow-hidden bg-white shadow-sm">
-                    {/* Chapter Header */}
                     <button 
                         onClick={() => toggleChapter(chapter.id)}
                         className="w-full px-5 py-4 flex justify-between items-center bg-white hover:bg-gray-50 transition-colors"

@@ -5,6 +5,6 @@ import { Interface } from "./screens/Interface";
 
 createRoot(document.getElementById("app") as HTMLElement).render(
   <BrowserRouter>
-    <Interface/>
+    <App/>
   </BrowserRouter>,
 );
